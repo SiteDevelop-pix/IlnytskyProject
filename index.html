@@ -1,0 +1,1482 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f3f4ef" />
+    <meta
+      name="description"
+      content="Навчальний проєкт про електропровідність різних речовин і матеріалів та їх застосування."
+    />
+    <title>Електропровідність матеріалів - навчальний проєкт</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --paper: #f3f4ef;
+        --ink: #17241e;
+        --muted: #617067;
+        --green: #126c4c;
+        --lime: #c8f36b;
+        --line: rgba(23, 36, 30, 0.14);
+        --font: "Manrope", "e-Ukraine", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        height: 100%;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--font);
+      }
+      button,
+      a {
+        font: inherit;
+      }
+      button:focus-visible,
+      a:focus-visible {
+        outline: 3px solid var(--green);
+        outline-offset: 4px;
+      }
+      .topbar {
+        position: fixed;
+        z-index: 20;
+        inset: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 4.5vw;
+        pointer-events: none;
+      }
+      .brand,
+      .counter {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        pointer-events: auto;
+      }
+      .brand-mark {
+        display: grid;
+        width: 30px;
+        height: 30px;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--lime);
+        font-size: 16px;
+      }
+      .counter {
+        font-variant-numeric: tabular-nums;
+      }
+      .counter-current {
+        color: var(--green);
+        font-size: 17px;
+      }
+      .progress {
+        position: fixed;
+        z-index: 25;
+        inset: 0 auto 0 0;
+        width: 3px;
+        background: rgba(23, 36, 30, 0.08);
+      }
+      .progress span {
+        display: block;
+        width: 100%;
+        height: 10%;
+        background: var(--green);
+        transition: height 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      main {
+        position: relative;
+        height: 100svh;
+        overflow: hidden;
+      }
+      .slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        width: 100%;
+        height: 100svh;
+        min-height: 100svh;
+        padding: 94px 8vw 86px;
+        overflow: hidden;
+        align-items: center;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateX(24px);
+        transition:
+          opacity 0.45s ease,
+          transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1),
+          visibility 0s linear 0.55s;
+        pointer-events: none;
+      }
+      .slide.is-active {
+        z-index: 1;
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(0);
+        transition-delay: 0s;
+        pointer-events: auto;
+      }
+      .slide-inner {
+        position: relative;
+        z-index: 1;
+        width: min(1180px, 100%);
+        margin: 0 auto;
+      }
+      .eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 18px;
+        color: var(--green);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .eyebrow:before {
+        width: 24px;
+        height: 2px;
+        background: currentColor;
+        content: "";
+      }
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+      h1,
+      h2 {
+        max-width: 850px;
+        margin-bottom: 22px;
+        font-size: clamp(38px, 5.1vw, 76px);
+        line-height: 1.04;
+        font-weight: 700;
+        letter-spacing: 0;
+      }
+      h1 {
+        font-size: clamp(48px, 7.2vw, 108px);
+      }
+      h3 {
+        margin-bottom: 10px;
+        font-size: 18px;
+        line-height: 1.25;
+      }
+      .lead {
+        max-width: 620px;
+        color: var(--muted);
+        font-size: 17px;
+        line-height: 1.7;
+      }
+      .cover {
+        background: #e5eee6;
+      }
+      .cover:after {
+        position: absolute;
+        inset: 0 0 0 45%;
+        background:
+          linear-gradient(
+            90deg,
+            #e5eee6 0%,
+            rgba(229, 238, 230, 0.2) 42%,
+            rgba(11, 31, 23, 0.08) 100%
+          ),
+          url("01.jpg") center/cover;
+        content: "";
+      }
+      .cover .slide-inner {
+        padding-top: 20px;
+      }
+      .cover-kicker {
+        display: inline-flex;
+        padding: 8px 13px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(23, 36, 30, 0.2);
+        border-radius: 100px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .cover h1 {
+        max-width: 730px;
+        font-size: clamp(60px, 8.4vw, 112px);
+      }
+      .cover h1 span {
+        color: var(--green);
+      }
+      .cover .lead {
+        max-width: 510px;
+        margin-bottom: 30px;
+      }
+      .credits {
+        display: grid;
+        width: min(760px, 100%);
+        grid-template-columns: 1fr 1fr;
+        gap: 14px 22px;
+        padding-top: 18px;
+        border-top: 1px solid var(--line);
+        font-size: 12px;
+        line-height: 1.5;
+      }
+      .credits strong {
+        display: block;
+        margin-bottom: 3px;
+        color: var(--green);
+        font-size: 10px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .credits .school {
+        grid-column: 1 / -1;
+      }
+      .split {
+        display: grid;
+        grid-template-columns: 0.92fr 1.08fr;
+        gap: 7vw;
+        align-items: center;
+      }
+      .photo-stack {
+        position: relative;
+        min-height: 430px;
+      }
+      .photo-stack img {
+        position: absolute;
+        display: block;
+        width: 74%;
+        height: 78%;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+      .photo-stack img:first-child {
+        inset: 0 0 auto auto;
+      }
+      .photo-stack img:last-child {
+        inset: auto auto 0 0;
+        width: 49%;
+        height: 47%;
+        border: 8px solid var(--paper);
+      }
+      .photo-stack img:only-child {
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+      .number-mark {
+        position: absolute;
+        right: 4%;
+        bottom: 5%;
+        color: var(--green);
+        font-size: clamp(68px, 9vw, 130px);
+        font-weight: 800;
+        line-height: 0.8;
+      }
+      .objective {
+        background: #edf1e8;
+      }
+      .objective-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-top: 36px;
+      }
+      .objective-item {
+        min-height: 176px;
+        padding: 24px 26px;
+        border-top: 2px solid var(--green);
+        background: rgba(255, 255, 255, 0.55);
+      }
+      .objective-item p,
+      .tile p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.65;
+      }
+      .objective-item .icon {
+        margin-bottom: 20px;
+        color: var(--green);
+        font-size: 24px;
+      }
+      .plan {
+        background: #dcebe1;
+      }
+      .plan-layout {
+        display: grid;
+        grid-template-columns: 0.82fr 1.18fr;
+        gap: 6vw;
+        align-items: center;
+      }
+      .plan-photo {
+        width: 100%;
+        height: 420px;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+      .plan-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 28px;
+        margin: 26px 0 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: plan;
+      }
+      .plan-list li {
+        display: grid;
+        grid-template-columns: 36px 1fr;
+        gap: 10px;
+        align-items: start;
+        padding: 15px 0;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+        counter-increment: plan;
+      }
+      .plan-list li:before {
+        color: var(--green);
+        content: "0" counter(plan);
+        font-size: 11px;
+        font-weight: 800;
+      }
+      .field {
+        background: #f5f1e7;
+      }
+      .field .split {
+        grid-template-columns: 1.03fr 0.97fr;
+      }
+      .field .photo-stack {
+        min-height: 445px;
+      }
+      .field .photo-stack img:first-child {
+        width: 82%;
+        height: 82%;
+      }
+      .fact {
+        display: flex;
+        gap: 13px;
+        align-items: center;
+        margin-top: 25px;
+        padding: 15px 0;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.55;
+      }
+      .fact b {
+        flex: 0 0 auto;
+        color: var(--green);
+        font-size: 22px;
+      }
+      .diagnostics {
+        background: #e7efec;
+      }
+      .diagnostics .split {
+        grid-template-columns: 0.94fr 1.06fr;
+      }
+      .agriculture {
+        background: #e7edda;
+      }
+      .agriculture .photo-stack img:first-child {
+        width: 80%;
+        height: 84%;
+      }
+      .grid-four {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-top: 28px;
+      }
+      .tile {
+        min-height: 155px;
+        padding: 18px 16px;
+        border-top: 2px solid #7b9e48;
+        background: rgba(255, 255, 255, 0.6);
+      }
+      .tile .icon {
+        margin-bottom: 14px;
+        font-size: 20px;
+      }
+      .tile h3 {
+        font-size: 15px;
+      }
+      .tile p {
+        font-size: 12px;
+      }
+      .precision {
+        background: #eef0e8;
+      }
+      .precision-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5vw;
+        align-items: center;
+      }
+      .precision-photos {
+        display: grid;
+        height: 410px;
+        grid-template-columns: 1.2fr 0.8fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 10px;
+      }
+      .precision-photos img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 3px;
+      }
+      .precision-photos img:first-child {
+        grid-row: 1/3;
+      }
+      .precision-photos img:only-child {
+        grid-column: 1 / -1;
+        grid-row: 1 / -1;
+      }
+      .transport {
+        color: #f3f4ef;
+        background: #15291f;
+      }
+      .transport .eyebrow,
+      .transport .fact b {
+        color: var(--lime);
+      }
+      .transport .lead,
+      .transport .fact {
+        color: #bdc9c0;
+      }
+      .transport .fact {
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+      .transport .photo-stack img:last-child {
+        border-color: #15291f;
+      }
+      .transport .number-mark {
+        color: var(--lime);
+      }
+      .conclusion {
+        color: #f3f4ef;
+        background: var(--green);
+      }
+      .conclusion-label {
+        position: absolute;
+        z-index: 3;
+        top: 24px;
+        left: 50%;
+        margin: 0;
+        color: var(--lime);
+        font-size: 16px;
+        font-weight: 800;
+        text-align: center;
+        transform: translateX(-50%);
+      }
+      .conclusion .eyebrow {
+        color: var(--lime);
+      }
+      .conclusion .lead {
+        color: rgba(243, 244, 239, 0.8);
+      }
+      .conclusion-layout {
+        display: grid;
+        grid-template-columns: 1fr 0.9fr;
+        gap: 6vw;
+        align-items: center;
+      }
+      .conclusion-photo {
+        width: 100%;
+        height: 450px;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+      .conclusion-list {
+        display: grid;
+        gap: 16px;
+        margin-top: 30px;
+        padding: 0;
+        list-style: none;
+      }
+      .conclusion-list li {
+        display: grid;
+        grid-template-columns: 28px 1fr;
+        gap: 12px;
+        color: rgba(243, 244, 239, 0.9);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .conclusion-list li:before {
+        color: var(--lime);
+        content: "↗";
+        font-size: 18px;
+        font-weight: 800;
+      }
+      .sources {
+        background: #f2f1e9;
+      }
+      .sources-layout {
+        display: grid;
+        grid-template-columns: 0.78fr 1.22fr;
+        gap: 6vw;
+        align-items: center;
+      }
+      .source-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 24px;
+        margin: 24px 0 0;
+        padding: 0;
+        list-style: none;
+        counter-reset: sources;
+      }
+      .source-photo {
+        width: 100%;
+        height: 220px;
+        margin-top: 18px;
+        border-radius: 4px;
+        object-fit: cover;
+      }
+      .source-list li {
+        padding: 12px 0;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.55;
+        counter-increment: sources;
+      }
+      .source-list li:before {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--green);
+        content: "ДЖЕРЕЛО 0" counter(sources);
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+      }
+      .source-list a {
+        color: var(--green);
+        text-decoration-thickness: 1px;
+        text-underline-offset: 3px;
+      }
+      .bottom-nav {
+        position: fixed;
+        z-index: 20;
+        right: 4.5vw;
+        bottom: 22px;
+        display: flex;
+        gap: 8px;
+      }
+      .nav-button {
+        display: grid;
+        width: 44px;
+        height: 44px;
+        place-items: center;
+        border: 1px solid rgba(23, 36, 30, 0.2);
+        border-radius: 50%;
+        background: rgba(243, 244, 239, 0.92);
+        color: var(--ink);
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          color 0.2s,
+          transform 0.2s;
+      }
+      .nav-button:hover {
+        transform: translateY(-2px);
+        background: var(--green);
+        color: white;
+      }
+      .nav-button:disabled {
+        opacity: 0.38;
+        cursor: default;
+        transform: none;
+      }
+      .reveal {
+        opacity: 0;
+        transform: translateY(18px);
+        transition:
+          opacity 0.65s ease,
+          transform 0.65s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .slide.is-active .reveal {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .slide.is-active .reveal:nth-child(2) {
+        transition-delay: 0.08s;
+      }
+      .slide.is-active .reveal:nth-child(3) {
+        transition-delay: 0.16s;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *:before,
+        *:after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+        }
+      }
+      @media (max-width: 760px) {
+        .topbar {
+          padding: 14px 20px 14px 25px;
+        }
+        .brand,
+        .counter {
+          font-size: 10px;
+        }
+        .slide {
+          padding: 64px 24px 76px 28px;
+          align-items: center;
+        }
+        .slide-inner {
+          margin: auto 0;
+        }
+        h1 {
+          font-size: clamp(46px, 13vw, 72px);
+        }
+        h2 {
+          font-size: clamp(36px, 9vw, 54px);
+        }
+        .lead {
+          font-size: 15px;
+        }
+        .cover:after {
+          inset: 38% 0 0;
+          background-image:
+            linear-gradient(
+              180deg,
+              #e5eee6 0%,
+              rgba(229, 238, 230, 0.08) 40%,
+              rgba(11, 31, 23, 0.15) 100%
+            ),
+            url("https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1100&q=80");
+          background-position: center;
+        }
+        .cover h1 {
+          font-size: clamp(52px, 12vw, 78px);
+        }
+        .credits {
+          max-width: 470px;
+          gap: 10px 15px;
+        }
+        .split,
+        .field .split,
+        .diagnostics .split,
+        .plan-layout,
+        .precision-layout,
+        .conclusion-layout,
+        .sources-layout {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+        .photo-stack {
+          min-height: 245px;
+          max-width: 500px;
+        }
+        .photo-stack img {
+          width: 72%;
+          height: 82%;
+        }
+        .photo-stack img:last-child {
+          width: 45%;
+          height: 48%;
+        }
+        .number-mark {
+          font-size: 70px;
+        }
+        .objective-grid {
+          gap: 10px;
+          margin-top: 22px;
+        }
+        .objective-item {
+          min-height: 150px;
+          padding: 16px;
+        }
+        .objective-item .icon {
+          margin-bottom: 12px;
+        }
+        .objective-item p {
+          font-size: 12px;
+        }
+        .plan-photo {
+          height: 190px;
+        }
+        .plan-list {
+          gap: 0 14px;
+          margin-top: 10px;
+        }
+        .plan-list li {
+          grid-template-columns: 28px 1fr;
+          padding: 9px 0;
+          font-size: 11px;
+        }
+        .field .photo-stack {
+          min-height: 230px;
+        }
+        .fact {
+          margin-top: 13px;
+          padding: 10px 0;
+          font-size: 12px;
+        }
+        .grid-four {
+          grid-template-columns: 1fr 1fr;
+          gap: 8px;
+          margin-top: 18px;
+        }
+        .tile {
+          min-height: 130px;
+          padding: 14px;
+        }
+        .tile .icon {
+          margin-bottom: 9px;
+        }
+        .precision-photos {
+          height: 240px;
+        }
+        .conclusion-photo {
+          height: 230px;
+        }
+        .conclusion-list {
+          gap: 10px;
+          margin-top: 18px;
+        }
+        .conclusion-list li {
+          font-size: 12px;
+        }
+        .source-list {
+          gap: 6px 15px;
+          margin-top: 12px;
+        }
+        .source-list li {
+          padding: 8px 0;
+          font-size: 10px;
+        }
+        .bottom-nav {
+          right: 18px;
+          bottom: 15px;
+        }
+        .nav-button {
+          width: 40px;
+          height: 40px;
+        }
+      }
+      @media (max-width: 390px) {
+        .slide {
+          padding-right: 18px;
+          padding-left: 25px;
+        }
+        .cover h1 {
+          font-size: 52px;
+        }
+        .credits {
+          font-size: 10px;
+        }
+        .objective-item {
+          padding: 12px;
+        }
+        .objective-item h3 {
+          font-size: 15px;
+        }
+        .source-list {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 760px) {
+        .slide {
+          padding: 52px 24px 70px 28px;
+        }
+        .cover h1 {
+          font-size: clamp(52px, 12vw, 72px);
+        }
+        .cover .lead {
+          margin-bottom: 14px;
+          font-size: 14px;
+          line-height: 1.45;
+        }
+        .cover-kicker {
+          margin-bottom: 12px;
+        }
+        .credits {
+          gap: 8px 12px;
+          padding-top: 10px;
+          font-size: 11px;
+          line-height: 1.35;
+        }
+        .credits strong {
+          font-size: 9px;
+        }
+        .eyebrow {
+          margin-bottom: 10px;
+          font-size: 10px;
+        }
+        h2 {
+          margin-bottom: 12px;
+          font-size: clamp(32px, 8.4vw, 48px);
+        }
+        .lead {
+          font-size: 14px;
+          line-height: 1.48;
+        }
+        .split,
+        .field .split,
+        .diagnostics .split,
+        .plan-layout,
+        .precision-layout,
+        .conclusion-layout,
+        .sources-layout {
+          gap: 14px;
+        }
+        .photo-stack {
+          min-height: 150px;
+        }
+        .field .photo-stack {
+          min-height: 125px;
+        }
+        .objective .photo-stack {
+          min-height: 115px;
+        }
+        .objective-grid {
+          gap: 8px;
+          margin-top: 12px;
+        }
+        .objective-item {
+          min-height: 0;
+          padding: 12px;
+        }
+        .objective-item .icon {
+          margin-bottom: 6px;
+          font-size: 20px;
+        }
+        .objective-item p {
+          font-size: 11px;
+          line-height: 1.4;
+        }
+        .objective-item h3 {
+          margin-bottom: 6px;
+          font-size: 14px;
+        }
+        .plan-photo {
+          height: 125px;
+        }
+        .plan-list li {
+          padding: 6px 0;
+          font-size: 12px;
+          line-height: 1.35;
+        }
+        .agriculture .photo-stack {
+          min-height: 115px;
+        }
+        .grid-four {
+          gap: 6px;
+          margin-top: 10px;
+        }
+        .tile {
+          min-height: 82px;
+          padding: 9px 10px;
+        }
+        .tile .icon {
+          margin-bottom: 4px;
+          font-size: 16px;
+        }
+        .tile h3 {
+          margin-bottom: 4px;
+          font-size: 13px;
+        }
+        .tile p {
+          font-size: 11px;
+          line-height: 1.35;
+        }
+        .precision-photos {
+          height: 145px;
+        }
+        .conclusion-photo {
+          height: 125px;
+        }
+        .conclusion-list {
+          gap: 6px;
+          margin-top: 12px;
+        }
+        .conclusion-list li {
+          gap: 8px;
+          font-size: 12px;
+          line-height: 1.4;
+        }
+        .source-list {
+          gap: 5px 14px;
+          margin-top: 8px;
+        }
+        .source-photo {
+          height: 120px;
+          margin-top: 10px;
+        }
+        .source-list li {
+          padding: 7px 0;
+          font-size: 12px;
+          line-height: 1.4;
+        }
+        .source-list li:before {
+          font-size: 8px;
+        }
+      }
+      @media (max-height: 780px) and (min-width: 761px) {
+        .slide {
+          padding-top: 62px;
+          padding-bottom: 64px;
+        }
+        .cover h1 {
+          font-size: clamp(60px, 7vw, 84px);
+        }
+        .cover .lead {
+          margin-bottom: 16px;
+        }
+        .credits {
+          gap: 8px 16px;
+          padding-top: 10px;
+        }
+        .objective-grid {
+          gap: 12px;
+          margin-top: 18px;
+        }
+        .objective-item {
+          min-height: 0;
+          padding: 16px;
+        }
+        .objective-item .icon {
+          margin-bottom: 10px;
+        }
+        .plan-photo,
+        .field .photo-stack {
+          height: 320px;
+          min-height: 320px;
+        }
+        .fact {
+          margin-top: 12px;
+          padding: 9px 0;
+        }
+        .grid-four {
+          gap: 8px;
+          margin-top: 14px;
+        }
+        .tile {
+          min-height: 110px;
+          padding: 12px;
+        }
+        .precision-photos {
+          height: 320px;
+        }
+        .conclusion-photo {
+          height: 340px;
+        }
+        .conclusion-list {
+          gap: 8px;
+          margin-top: 16px;
+        }
+      }
+      @media (max-height: 640px) and (min-width: 761px) {
+        .slide {
+          padding-top: 42px;
+          padding-bottom: 48px;
+        }
+        .cover h1 {
+          font-size: 64px;
+        }
+        .cover-kicker {
+          margin-bottom: 8px;
+        }
+        .cover .lead {
+          margin-bottom: 10px;
+        }
+        .credits {
+          gap: 6px 12px;
+          padding-top: 8px;
+          font-size: 11px;
+        }
+        .photo-stack,
+        .field .photo-stack {
+          min-height: 220px;
+        }
+        .plan-photo,
+        .precision-photos,
+        .conclusion-photo {
+          height: 220px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar" aria-label="Навігація презентацією">
+      <div class="counter" aria-live="polite">
+        <span class="counter-current" id="current-slide">01</span><span>/</span
+        ><span>10</span>
+      </div>
+    </header>
+    <div class="progress" aria-hidden="true">
+      <span id="progress-fill"></span>
+    </div>
+    <main id="presentation" aria-label="Презентація про електропровідність матеріалів">
+      <section
+        class="slide cover is-active"
+        id="slide-1"
+        aria-label="Слайд 1. Титульний"
+      >
+        <div class="slide-inner">
+          <span class="cover-kicker reveal">Проєкт</span>
+          <h1 class="reveal">
+            Матеріали,<br /><span>що проводять</span><br />струм
+          </h1>
+          <p class="lead reveal">
+            Електропровідність різних речовин і матеріалів та їх застосування.
+          </p>
+          <div class="credits reveal">
+            <div class="school">
+              <strong>Заклад освіти</strong>Опорний заклад &quot;Торецька
+              загальноосвітня школа І-ІІІ ступенів №6&quot; Торецької міської
+              військово-цивільної адміністрації Бахмутського району Донецької
+              області
+            </div>
+            <div><strong>Виконав</strong>Ільницький Гліб</div>
+            <div><strong>Вчитель</strong>Антонова Емма Григорівна</div>
+            <div><strong>Рік</strong>2026</div>
+          </div>
+        </div>
+      </section>
+      <section
+        class="slide objective"
+        id="slide-2"
+        aria-label="Слайд 2. Мета й актуальність"
+      >
+        <div class="slide-inner split">
+          <div>
+            <h2 class="reveal">Чому одні<br />матеріали проводять?</h2>
+            <div class="objective-grid reveal">
+              <article class="objective-item">
+                <div class="icon" aria-hidden="true">◎</div>
+                <h3>Мета</h3>
+                <p>
+                  Порівняти електропровідність різних речовин і пояснити, як
+                  будова матеріалу впливає на проходження струму.
+                </p>
+              </article>
+              <article class="objective-item">
+                <div class="icon" aria-hidden="true">↗</div>
+                <h3>Актуальність</h3>
+                <p>
+                  Правильний матеріал впливає на ціну, роботу пристрою та
+                  безпеку електричного кола.
+                </p>
+              </article>
+            </div>
+          </div>
+          <div
+            class="photo-stack reveal"
+            aria-label="Електронна плата та матеріали для електричних пристроїв"
+          >
+            <img
+              src="02.jpg"
+              alt="Кольорові електричні дроти"
+              loading="eager"
+            />
+          </div>
+        </div>
+      </section>
+      <section
+        class="slide plan"
+        id="slide-3"
+        aria-label="Слайд 3. План роботи"
+      >
+        <div class="slide-inner plan-layout">
+          <img
+            class="plan-photo reveal"
+            src="03.jpg"
+            alt="Лампи показують, як електричне коло може давати світло"
+            loading="lazy"
+          />
+          <div>
+            <h2 class="reveal">План роботи</h2>
+            <p class="lead reveal">
+              Розглянемо чотири незвичні приклади й побачимо, де ці властивості
+              стають у пригоді.
+            </p>
+            <ol class="plan-list reveal">
+              <li>Порівняти срібло, мідь і алюміній у дротах.</li>
+              <li>З’ясувати, чому суха сіль і солона вода проводять по-різному.</li>
+              <li>Побачити, як світло впливає на напівпровідники.</li>
+              <li>Розібратися, навіщо ізоляторам ліній ребриста форма.</li>
+              <li>Зіставити матеріали з їхнім застосуванням у пристроях.</li>
+              <li>Підбити підсумки.</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+      <section
+        class="slide field"
+        id="slide-4"
+        aria-label="Слайд 4. Метали - провідники струму"
+      >
+        <div class="slide-inner split">
+          <div>
+            <h2 class="reveal">Срібло проводить<br />краще за мідь</h2>
+            <p class="lead reveal">
+              Та чому дроти роблять не зі срібла? Воно надто дороге. Мідь -
+              вдалий баланс провідності, міцності й ціни.
+            </p>
+            <div class="fact reveal">
+              <b>→</b
+              ><span
+                >Срібло - один із найкращих провідників серед металів, але його
+                вартість робить масові кабелі невигідними.</span
+              >
+            </div>
+            <div class="fact reveal">
+              <b>→</b
+              ><span
+                >Алюміній легший, тож його обирають для довгих повітряних ліній,
+                де важлива вага дроту.</span
+              >
+            </div>
+          </div>
+          <div class="photo-stack reveal">
+            <img
+              src="04.jpg"
+              alt="Котушки металевого дроту"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </section>
+      <section
+        class="slide diagnostics"
+        id="slide-5"
+        aria-label="Слайд 5. Електроліти та графіт"
+      >
+        <div class="slide-inner split">
+          <div class="photo-stack reveal">
+            <img
+              src="05.jpg"
+              alt="Кухонна сіль, що розчиняється у воді"
+              loading="lazy"
+            />
+          </div>
+          <div>
+            <h2 class="reveal">Сіль проводить<br />не завжди</h2>
+            <p class="lead reveal">
+              Сухий кристал солі майже не проводить струм. У воді його частинки
+              розділяються на рухомі йони - і розчин починає проводити.
+            </p>
+            <div class="fact reveal">
+              <b>→</b
+              ><span
+                >У твердому кристалі йони зафіксовані на місці; в розчині вони
+                можуть переносити заряд.</span
+              >
+            </div>
+            <div class="fact reveal">
+              <b>→</b
+              ><span
+                >Так само струм переносять йони всередині батарей та під час
+                електролізу.</span
+              >
+            </div>
+            <div class="fact reveal">
+              <b>→</b
+              ><span
+                >Грифель олівця - це графіт із глиною. Тому олівцем можна
+                намалювати просту провідну доріжку.</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+      <section
+        class="slide agriculture"
+        id="slide-6"
+        aria-label="Слайд 6. Напівпровідники"
+      >
+        <div class="slide-inner">
+          <div class="split">
+            <div>
+              <h2 class="reveal">Кремній реагує<br />на світло</h2>
+              <p class="lead reveal">
+                Напівпровідник не просто «посередині» між металом та ізолятором:
+                його провідністю можна керувати.
+              </p>
+            </div>
+            <div class="photo-stack reveal">
+              <img
+                src="06.png"
+                alt="Шматки кремнію - матеріалу для напівпровідників"
+                loading="lazy"
+              />
+            </div>
+          </div>
+          <div class="grid-four reveal">
+            <article class="tile">
+              <div class="icon" aria-hidden="true">☼</div>
+              <h3>Діоди</h3>
+              <p>Випрямляють струм у зарядних пристроях.</p>
+            </article>
+            <article class="tile">
+              <div class="icon" aria-hidden="true">≈</div>
+              <h3>Транзистори</h3>
+              <p>Працюють як мініатюрні електричні перемикачі.</p>
+            </article>
+            <article class="tile">
+              <div class="icon" aria-hidden="true">⌁</div>
+              <h3>Фотодатчики</h3>
+              <p>Реагують на світло в камерах і датчиках.</p>
+            </article>
+            <article class="tile">
+              <div class="icon" aria-hidden="true">⌖</div>
+              <h3>Сонячні комірки</h3>
+              <p>Перетворюють сонячне світло на електроенергію.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section
+        class="slide precision"
+        id="slide-7"
+        aria-label="Слайд 7. Ізолятори та діелектрики"
+      >
+        <div class="slide-inner precision-layout">
+          <div>
+            <h2 class="reveal">Навіщо ізолятору<br />ребра?</h2>
+            <p class="lead reveal">
+              Фарфорові ізолятори на лініях мають виступи не для краси: ребра
+              подовжують шлях, яким струм міг би просочитися по мокрій поверхні.
+            </p>
+            <div class="fact reveal">
+              <b>→</b
+              ><span
+                >Скло, фарфор і гума погано проводять струм, тому відокремлюють
+                небезпечні контакти.</span
+              >
+            </div>
+            <div class="fact reveal">
+              <b>→</b
+              ><span
+                >Ребриста форма збільшує відстань уздовж поверхні, особливо
+                важливу під час дощу й туману.</span
+              >
+            </div>
+            <div class="fact reveal">
+              <b>→</b
+              ><span
+                >У конденсаторі ізолятор між пластинами допомагає накопичувати
+                електричний заряд.</span
+              >
+            </div>
+          </div>
+          <div class="precision-photos reveal">
+            <img
+              src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&w=900&q=85"
+              alt="Високовольтні лінії електропередач"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </section>
+      <section
+        class="slide transport"
+        id="slide-8"
+        aria-label="Слайд 8. Матеріали та їх застосування"
+      >
+        <div class="slide-inner split">
+          <div>
+            <h2 class="reveal">Кожен матеріал<br />має свою роль</h2>
+            <p class="lead reveal">
+              У пристрої поєднують провідники, напівпровідники й діелектрики.
+              Матеріал добирають під потрібний струм, нагрівання, гнучкість і
+              безпеку.
+            </p>
+            <div class="fact reveal">
+              <b>01</b
+              ><span
+                >Мідь або алюміній проводять струм у кабелях і контактах.</span
+              >
+            </div>
+            <div class="fact reveal">
+              <b>02</b
+              ><span
+                >Кремній є основою мікросхем, діодів і транзисторів.</span
+              >
+            </div>
+            <div class="fact reveal">
+              <b>03</b
+              ><span
+                >Полімери, гума, скло й кераміка ізолюють контакти та дроти.</span
+              >
+            </div>
+          </div>
+          <div class="photo-stack reveal">
+            <img
+              src="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=1100&q=85"
+              alt="Електромобіль заряджається від станції"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </section>
+      <section
+        class="slide conclusion"
+        id="slide-9"
+        aria-label="Слайд 9. Висновок"
+      >
+        <p class="conclusion-label">Висновок</p>
+        <div class="slide-inner conclusion-layout">
+          <div>
+            <h2 class="reveal">Провідність<br />визначає функцію</h2>
+            <p class="lead reveal">
+              Здатність проводити струм залежить від будови речовини та наявності
+              рухомих носіїв заряду.
+            </p>
+            <ul class="conclusion-list reveal">
+              <li>
+                Метали проводять струм переважно завдяки вільним електронам.
+              </li>
+              <li>
+                В електролітах заряд переносять йони; графіт також проводить
+                струм.
+              </li>
+              <li>
+                Провідність напівпровідників можна змінювати, тому вони важливі
+                для електроніки.
+              </li>
+              <li>
+                Діелектрики майже не проводять струм і захищають людей та
+                електричні кола.
+              </li>
+            </ul>
+          </div>
+          <img
+            class="conclusion-photo reveal"
+            src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1000&q=85"
+            alt="Сонячні панелі перетворюють світло на електричний струм"
+            loading="lazy"
+          />
+        </div>
+      </section>
+      <section
+        class="slide sources"
+        id="slide-10"
+        aria-label="Слайд 10. Джерела"
+      >
+        <div class="slide-inner sources-layout">
+          <div>
+            <h2 class="reveal">Джерела<br />для дослідження</h2>
+          </div>
+          <ol class="source-list reveal">
+            <li>
+              <a
+                href="https://openstax.org/books/college-physics-2e/pages/20-3-resistance-and-resistivity"
+                target="_blank"
+                rel="noreferrer"
+                >OpenStax: опір і питомий опір матеріалів</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.britannica.com/science/electrical-conductivity"
+                target="_blank"
+                rel="noreferrer"
+                >Encyclopaedia Britannica: електропровідність</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.britannica.com/science/semiconductor"
+                target="_blank"
+                rel="noreferrer"
+                >Encyclopaedia Britannica: напівпровідники</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.britannica.com/science/electrolyte"
+                target="_blank"
+                rel="noreferrer"
+                >Encyclopaedia Britannica: електроліти</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.nist.gov/pml/electrical-resistivity-and-conductivity"
+                target="_blank"
+                rel="noreferrer"
+                >Національний інститут стандартів і технологій США: питомий опір і провідність</a
+              >
+            </li>
+            <li>Фотоілюстрації: Unsplash.</li>
+          </ol>
+        </div>
+      </section>
+    </main>
+    <nav class="bottom-nav" aria-label="Керування слайдами">
+      <button
+        class="nav-button"
+        id="previous"
+        type="button"
+        aria-label="Попередній слайд"
+        title="Попередній слайд"
+      >
+        ←</button
+      ><button
+        class="nav-button"
+        id="next"
+        type="button"
+        aria-label="Наступний слайд"
+        title="Наступний слайд"
+      >
+        →
+      </button>
+    </nav>
+    <script>
+      const presentation = document.querySelector("#presentation");
+      const slides = [...document.querySelectorAll(".slide")];
+      const currentLabel = document.querySelector("#current-slide");
+      const progressFill = document.querySelector("#progress-fill");
+      const previousButton = document.querySelector("#previous");
+      const nextButton = document.querySelector("#next");
+      let activeIndex = 0;
+      function showSlide(index) {
+        activeIndex = Math.max(0, Math.min(slides.length - 1, index));
+        updateControls();
+      }
+      function updateControls() {
+        currentLabel.textContent = String(activeIndex + 1).padStart(2, "0");
+        progressFill.style.height = `${((activeIndex + 1) / slides.length) * 100}%`;
+        previousButton.disabled = activeIndex === 0;
+        nextButton.disabled = activeIndex === slides.length - 1;
+        slides.forEach((slide, index) =>
+          slide.classList.toggle("is-active", index === activeIndex),
+        );
+      }
+      previousButton.addEventListener("click", () =>
+        showSlide(activeIndex - 1),
+      );
+      nextButton.addEventListener("click", () => showSlide(activeIndex + 1));
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          showSlide(activeIndex + 1);
+        } else if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          showSlide(activeIndex - 1);
+        }
+      });
+      updateControls();
+    </script>
+  </body>
+</html>
